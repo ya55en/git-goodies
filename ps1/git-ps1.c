@@ -38,6 +38,21 @@ similar to what is shown below:
 
 PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$$(test -d ./.git && git status | git-ps1) '
 
+ TODO:
+   - Parse output for things like "Your branch is ahead of.." (see example [1] below)
+
+
+
+[1] Example for git status after commit, BEFORE push
+----cut here--------------
+yassen@ubuntu:~/Work/git-goodies$ (br:master) git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+----cut here--------------
+
  */
 
 #include <stdbool.h>
