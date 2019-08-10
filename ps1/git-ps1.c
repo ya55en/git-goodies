@@ -40,6 +40,7 @@ PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\
 
  TODO:
    - Parse output for things like "Your branch is ahead of.." (see example [1] below)
+   - IMPORTANT: prompt does NOT work for innner gir repos! Needs a fix. 
 
 
 
@@ -99,13 +100,13 @@ int main(void) {
             strcpy(thebranch, line + sizeof("On branch ") - 1);
         }
     }
-    fputs(" ", stdout);
+
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
     else if (untracked)  fputs(COL_YEL, stdout);
-    printf("(br:%s)", thebranch);
+    printf("(>%s)", thebranch);
     if (not_staged || to_be_committed || untracked) {
-        fputs(COL_OFF, stdout);
+        printf("%s ", COL_OFF);
     }
 
     return 0;
