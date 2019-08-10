@@ -104,7 +104,11 @@ int main(void) {
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
     else if (untracked)  fputs(COL_YEL, stdout);
-    printf("(>%s) ", thebranch);
+
+    // Unicodes: middle: A537 (used)  big: 27A1+space, super small bulet 2022 or 2981)
+    // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
+    printf("(➡ %s ꔷ) ", thebranch);  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
+
     if (not_staged || to_be_committed || untracked) {
         fputs(COL_OFF, stdout);
     }
