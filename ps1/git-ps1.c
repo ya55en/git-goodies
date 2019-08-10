@@ -104,9 +104,9 @@ int main(void) {
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
     else if (untracked)  fputs(COL_YEL, stdout);
-    printf("(>%s)", thebranch);
+    printf("(>%s) ", thebranch);
     if (not_staged || to_be_committed || untracked) {
-        printf("%s ", COL_OFF);
+        fputs(COL_OFF, stdout);
     }
 
     return 0;
