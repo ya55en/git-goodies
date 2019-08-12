@@ -66,6 +66,7 @@ Error messages when not a git repo:
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define EOL 10
 #define SPC 32
@@ -84,10 +85,36 @@ Error messages when not a git repo:
 
 
 /**
+ * Return index of given char's occurance (searching left to right)
+ * in str if found, -1 otherwise.
+ */
+int indexof(const char ch, const char *str, int start) {
+    int idx = start;
+    while (str[idx] != NUL && str[idx] != ch) {
+        idx ++;
+    }
+    return (NUL == str[idx])? -1 : idx;
+}
+
+
+/**
+ * Return index of given char's occurance (searching right to left)
+ * in str if found, -1 otherwise.
+ */
+int rindexof(const char ch, const char *str, int start) {
+    int idx = (start > -1)? start : strlen(str) - 1;
+    while (idx >= 0 && str[idx] != ch) {
+        idx --;
+    }
+    return idx;
+}
+
+
+/**
  * Return true if string a starts with string b, false otherwise.
  */
 bool startswith(const char *a, const char *b) {
-   return (strncmp(a, b, strlen(b)) == 0);
+    return (strncmp(a, b, strlen(b)) == 0);
 }
 
 
@@ -96,7 +123,7 @@ bool startswith(const char *a, const char *b) {
  * and output appropriate combination of strings with data forming he last
  * part of a PS1 shell prompt. Return appropriate result code.
  */
-int doit(void) {
+int parse_input(void) {
 
     char line[LINE_MAX];
     char thebranch[BRANCH_MAX];
@@ -105,27 +132,47 @@ int doit(void) {
     bool not_staged = false;
     bool untracked = false;
 
+    bool uptodate = false;
+    int aheadof_origin = 0;
+    int aheadof_count = -1;
+    int behind_count = -1;
+
     while (fgets(line, sizeof(line), stdin) != NULL) {  // reads newline too
         if (startswith(line, "fatal: ")) {
             return 128;  // return same rc as 'git status' when not in a git repo
-        }
-        not_staged = not_staged || startswith(line, "Changes not staged for commit:");
-        to_be_committed = to_be_committed || startswith(line, "Changes to be committed:");
-        untracked = untracked || startswith(line, "Untracked files:");
 
-        if (startswith(line, "On branch ")) {
+        } else if (startswith(line, "On branch ")) {
             // overwrite line EOL with NUL to get rid of it
             char* p = strchr(line, EOL);
             line[(int)(p - line)] = NUL;  // (p - line) is the index of the EOL char
             // get the last word as the branch name
             strcpy(thebranch, line + sizeof("On branch ") - 1);
+
+        } else if (startswith(line, "Your branch is ahead of ")) {
+            int right = rindexof(' ', line, -1);
+            int left = rindexof(' ', line, right -1);
+            aheadof_count = atoi(&line[left + 1]);
+
+        } else if (startswith(line, "Your branch is behind ")) {
+            int comma = rindexof(',', line, -1);
+            int right = rindexof(' ', line, comma -1);
+            int left = rindexof(' ', line, right -1);
+            behind_count = atoi(&line[left + 1]);
+
+        } else if (startswith(line, "Your branch is up to date ")) {
+            uptodate = true;
+
+        } else {
+            not_staged = not_staged || startswith(line, "Changes not staged for commit:");
+            to_be_committed = to_be_committed || startswith(line, "Changes to be committed:");
+            untracked = untracked || startswith(line, "Untracked files:");
         }
     }
 
     // Unicodes: middle: A537 (used)  big: 27A1+space, super small bulet 2022 or 2981)
     // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
 
-    printf("(➡ ");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
+    printf("(");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
     else if (untracked)  fputs(COL_YEL, stdout);
@@ -135,11 +182,17 @@ int doit(void) {
     if (not_staged || to_be_committed || untracked) {
         fputs(COL_OFF, stdout);
     }
-    fputs(" ꔷ) ", stdout);
+    if (aheadof_count > -1) {
+        printf(" %s%s %d%s) ", COL_RED, "➡", aheadof_count, COL_OFF);  // 27A1 + spc
+    } else if (behind_count > -1) {
+        printf(" %s%s %d%s) ", COL_YEL, "⬅", behind_count, COL_OFF);  // 2b05 is <-
+    } else {
+        fputs(" ꔷ) ", stdout);
+    }
     return 0;
 }
 
-
+#include <stdlib.h>
 int main(int argc, char **argv) {
 
     if (argc > 1 && strcmp("--4bashrc", argv[1]) == 0) {
@@ -147,5 +200,5 @@ int main(int argc, char **argv) {
         return 0;
     }
     // else:
-    return doit();
+    return parse_input();
 }
