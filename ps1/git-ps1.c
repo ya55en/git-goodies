@@ -71,6 +71,7 @@ Error messages when not a git repo:
 #define EOL 10
 #define SPC 32
 #define NUL '\0'
+#define COMMA ','
 
 #define PATH_MAX 255
 #define LINE_MAX 1024
@@ -149,14 +150,14 @@ int parse_input(void) {
             strcpy(thebranch, line + sizeof("On branch ") - 1);
 
         } else if (startswith(line, "Your branch is ahead of ")) {
-            int right = rindexof(' ', line, -1);
-            int left = rindexof(' ', line, right -1);
+            int right = rindexof(SPC, line, -1);
+            int left = rindexof(SPC, line, right -1);
             aheadof_count = atoi(&line[left + 1]);
 
         } else if (startswith(line, "Your branch is behind ")) {
-            int comma = rindexof(',', line, -1);
-            int right = rindexof(' ', line, comma -1);
-            int left = rindexof(' ', line, right -1);
+            int comma = rindexof(COMMA, line, -1);
+            int right = rindexof(SPC, line, comma -1);
+            int left = rindexof(SPC, line, right -1);
             behind_count = atoi(&line[left + 1]);
 
         } else if (startswith(line, "Your branch is up to date ")) {
