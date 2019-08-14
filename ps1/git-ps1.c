@@ -24,7 +24,7 @@
 #define COL_YEL "\e[33m"
 #define COL_OFF "\e[0m"
 
-#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | git-ps1)\"  # git-ps1-MARKER: Do NOT remove marker\n"
+#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | ps1-4git)\"  # ps1-4git-MARKER: Do NOT remove marker\n"
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =

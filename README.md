@@ -12,13 +12,13 @@ $ make && sudo make install
 The ``make install`` step should have added to your ``~/.bashrc`` a line that appends ``ps1-4git`` output to your PS1, similar to what is shown below:
 
 ```
-PS1="$PS1\$(git status 2>&1 | git-ps1)"
+PS1="$PS1\$(git status 2>&1 | ps1-4git)"
 ```
 
 The ``ps1-4git`` binary outputs such a line when called with ``--4bashrc``, like:
 
 ```
-ps1-4git --4bashrc >> ~/.bashrc"  # make sure you do not add references
+ps1-4git --4bashrc >> ~/.bashrc"  # make sure you do not add this multiple times
 ```
 
 Check also ``ps1-4git --help``.
