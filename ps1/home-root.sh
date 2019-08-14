@@ -1,4 +1,5 @@
 #! /bin/sh
+# Prints to stdout home root directory for this system
 
 useradd_conf=/etc/default/useradd
 
@@ -12,4 +13,3 @@ EOS
 result=$(awk -F= "$_script" $useradd_conf)
 
 echo "$result" | sed 's:^\s*\(.*\)\s*$:\1:'
-

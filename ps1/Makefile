@@ -22,12 +22,10 @@ clean:
 	rm -f git-ps1 git-ps1_prof git-ps1_debug
 
 
-#HOME_ROOT := $(shell awk -F= 'BEGIN {found = 0} /^\s*HOME\s*=/ {print $$2; found = 1} END {if (!found) print "/home"}' /etc/default/useradd)
 HOME_ROOT = $(shell ./home-root.sh)
 SUDO_HOME = $(HOME_ROOT)/$(SUDO_USER)
 
 install:	git-ps1
-	@echo "SUDO_HOME = $(SUDO_HOME)"
 	install -s -m 755 -o root -g root ./git-ps1 /usr/local/bin/
 	grep -q git-ps1-MARKER $(SUDO_HOME)/.bashrc || git-ps1 --4bashrc >> $(SUDO_HOME)/.bashrc
 
