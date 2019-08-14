@@ -36,14 +36,7 @@ $ sudo make install
 Then add $(test -d ./.git && git status | git-ps1) to your PS1 environment variable,
 similar to what is shown below:
 
-PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$$(test -d ./.git && git status | git-ps1) '
-
- TODO:
-   - Parse output for things like "Your branch is ahead of.." (see example [1] below)
-   - IMPORTANT: prompt does NOT work for innner gir repos! Needs a fix. 
-   - Traverse directories backwards looking for a .git subdirectory somewhere.
-     Or just let git do that.
-
+PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$$(git status 2>&1 | git-ps1) '
 
 
 [1] Example for git status after commit, BEFORE push
@@ -60,13 +53,14 @@ Error messages when not a git repo:
   "fatal: not a git repository (or any of the parent directories): .git"
   "fatal: this operation must be run in a work tree"
 
-
  */
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#define VERSION "0.1.2"
 
 #define EOL 10
 #define SPC 32
@@ -83,6 +77,29 @@ Error messages when not a git repo:
 #define COL_OFF "\e[0m"
 
 #define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | git-ps1)\"  # git-ps1-MARKER: Do NOT remove marker\n"
+#define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
+
+const char* MSG_USAGE =
+    "ps1-4git - fancy git dash(board) in the prompt\n"
+    "\n"
+    "Usage:\n"
+    "\n"
+    "  ps1-4git -h|--help          Print this help screen.\n"
+    "  ps1-4git -v|--version       Show program version.\n"
+    "\n"
+    "  git status 2>&1 | ps1-4git [-n|--no-unicode]\n"
+    "                                Parse 'git status' output and print informative\n"
+    "                                prompt ending string.\n"
+    "\n"
+    "                             -n|--no-unicode switch causes the output to be\n"
+    "                                ascii only (no fancy arrows or bullets)\n"
+    "\n"
+    "                                Put this in $() at the end of your PS1 like:\n"
+    "                                  PS1=\"$PS1\\$(git status 2>&1 | ps1-4git)\"\n"
+    "\n"
+    "  ps1-4git --4bashrc            Print a PS1 definition like the one above\n"
+    "                                suitable for inclusion in .bashrc.\n"
+;
 
 
 /**
@@ -123,8 +140,10 @@ bool startswith(const char *a, const char *b) {
  * Expect the output of 'git status' on stdin; scan it for certain patterns
  * and output appropriate combination of strings with data forming he last
  * part of a PS1 shell prompt. Return appropriate result code.
+ * If no_unicode is true -- replace any unicode  symbols (arrows, bullet)
+ * with ascii characters.
  */
-int parse_input(void) {
+int parse_input(bool no_unicode) {
 
     char line[LINE_MAX];
     char thebranch[BRANCH_MAX];
@@ -173,6 +192,10 @@ int parse_input(void) {
     // Unicodes: middle: A537 (used)  big: 27A1+space, super small bulet 2022 or 2981)
     // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
 
+    char* bullet = no_unicode? "*" : "ꔷ";
+    char* left_arrow = no_unicode? "<-" : "⬅ ";
+    char* right_arrow = no_unicode? "->" : "➡ ";
+
     printf("(");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
@@ -184,22 +207,40 @@ int parse_input(void) {
         fputs(COL_OFF, stdout);
     }
     if (aheadof_count > -1) {
-        printf(" %s%s %d%s) ", COL_RED, "➡", aheadof_count, COL_OFF);  // 27A1 + spc
+        printf("%s%s%d%s) ", COL_RED, right_arrow, aheadof_count, COL_OFF);  // 27A1 + spc
     } else if (behind_count > -1) {
-        printf(" %s%s %d%s) ", COL_YEL, "⬅", behind_count, COL_OFF);  // 2b05 is <-
+        printf("%s%s%d%s) ", COL_YEL, left_arrow, behind_count, COL_OFF);  // 2b05 is <-
     } else {
-        fputs(" ꔷ) ", stdout);
+        printf(" %s) ", bullet);
     }
     return 0;
 }
 
-#include <stdlib.h>
-int main(int argc, char **argv) {
 
-    if (argc > 1 && strcmp("--4bashrc", argv[1]) == 0) {
+int main(int argc, char **argv) {
+    if (argc > 2) {
+        fputs(MSG_WRONG_ARGS, stdout);
+        return 2;
+    }
+    if (argc == 2 && (strcmp("-h", argv[1]) * strcmp("--help", argv[1]) == 0)) {
+        fputs(MSG_USAGE, stdout);
+        return 0;
+    }
+    if (argc == 2 && (strcmp("-v", argv[1]) * strcmp("--version", argv[1]) == 0)) {
+        printf("ps1-4git v.%s\n", VERSION);
+        return 0;
+    }
+    if (argc == 2 && strcmp("--4bashrc", argv[1]) == 0) {
         fputs(PS1_SETUP_STRING, stdout);
         return 0;
     }
+    if (argc == 2 && (strcmp("-n", argv[1]) * strcmp("--no-unicode", argv[1]) == 0)) {
+        return parse_input(true);  // no_unicode=true
+    }
+    if (argc == 2) {
+        fputs(MSG_WRONG_ARGS, stdout);
+        return 0;
+    }
     // else:
-    return parse_input();
+    return parse_input(false);  // no_unicode=false
 }
