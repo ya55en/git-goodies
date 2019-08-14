@@ -60,7 +60,7 @@ Error messages when not a git repo:
 #include <string.h>
 #include <stdlib.h>
 
-#define VERSION "0.1.2"
+#define VERSION "0.1.3"
 
 #define EOL 10
 #define SPC 32
@@ -140,8 +140,8 @@ bool startswith(const char *a, const char *b) {
  * Expect the output of 'git status' on stdin; scan it for certain patterns
  * and output appropriate combination of strings with data forming he last
  * part of a PS1 shell prompt. Return appropriate result code.
- * If no_unicode is true -- replace any unicode  symbols (arrows, bullet)
- * with ascii characters.
+ * If no_unicode is true -- use ascii characters in place of symbols (arrows,
+ * bullets).
  */
 int parse_input(bool no_unicode) {
 
@@ -217,30 +217,43 @@ int parse_input(bool no_unicode) {
 }
 
 
+/**
+ * Return true iff arg is equal to either short_sw or long_sw.
+ */
+bool isoneof(const char* short_sw, const char* long_sw, const char* arg) {
+    return strcmp(short_sw, arg) * strcmp(long_sw, arg) == 0;
+}
+
+
+/**
+ * Main routine - handle command line args and call appropriate sub-functions.
+ */
 int main(int argc, char **argv) {
     if (argc > 2) {
         fputs(MSG_WRONG_ARGS, stdout);
         return 2;
     }
-    if (argc == 2 && (strcmp("-h", argv[1]) * strcmp("--help", argv[1]) == 0)) {
+    if (1 == argc) {
+        return parse_input(false);  // no_unicode=false
+    }
+    // else: if (argc == 2):
+    if (isoneof("-h", "--help", argv[1])) {
         fputs(MSG_USAGE, stdout);
         return 0;
     }
-    if (argc == 2 && (strcmp("-v", argv[1]) * strcmp("--version", argv[1]) == 0)) {
+    if (isoneof("-v", "--version", argv[1])) {
         printf("ps1-4git v.%s\n", VERSION);
         return 0;
     }
-    if (argc == 2 && strcmp("--4bashrc", argv[1]) == 0) {
+    if (strcmp("--4bashrc", argv[1]) == 0) {
         fputs(PS1_SETUP_STRING, stdout);
         return 0;
     }
-    if (argc == 2 && (strcmp("-n", argv[1]) * strcmp("--no-unicode", argv[1]) == 0)) {
+    if (isoneof("-n", "--no-unicode", argv[1])) {
         return parse_input(true);  // no_unicode=true
-    }
-    if (argc == 2) {
+
+    } else {
         fputs(MSG_WRONG_ARGS, stdout);
         return 0;
     }
-    // else:
-    return parse_input(false);  // no_unicode=false
 }
