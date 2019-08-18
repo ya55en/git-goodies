@@ -5,6 +5,8 @@
  *   https://stackoverflow.com/questions/38183974/cunit-assertion-assertion-void-0-f-pcursuite-failed
  *   http://cunit.sourceforge.net/doc/writing_tests.html
  *
+ * See README.md on how to build and run the tests.
+ *
  *   TODO:
  *    - Cover parse_input()
  *    - Provide end-to-end tests that send the binary different git-status outputs (python-based?)
