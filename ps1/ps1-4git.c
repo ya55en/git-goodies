@@ -24,7 +24,7 @@
 #define COL_YEL "\e[33m"
 #define COL_OFF "\e[0m"
 
-#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | ps1-4git)\"  # ps1-4git-MARKER: Do NOT remove marker\n"
+#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | ps1-4git -n)\"  # ps1-4git-MARKER: Do NOT remove marker\n"
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =
@@ -140,8 +140,8 @@ int parse_input(bool no_unicode) {
     // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
 
     char* bullet = no_unicode? "*" : "ꔷ";
-    char* left_arrow = no_unicode? "< " : "⬅ ";
-    char* right_arrow = no_unicode? "> " : "➡ ";
+    char* left_arrow = no_unicode? " <" : "⬅ ";
+    char* right_arrow = no_unicode? " >" : "➡ ";
 
     printf("(");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
     if (to_be_committed)  fputs(COL_GRN, stdout);
