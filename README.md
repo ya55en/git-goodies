@@ -33,7 +33,7 @@ $ sudo apt-get install build-essential make
 To make use of this utility -- download, build and install:
 
 ```bash
-$ git clone --depth=1 https://gitlab.itlabs.bg/open-source/git-goodies.git
+$ git clone --depth=1 https://github.com/yassen-itlabs/git-goodies.git
 $ cd git-goodies/ps1
 $ make && sudo make install
 ```
