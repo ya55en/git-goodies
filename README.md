@@ -1,30 +1,31 @@
 
 # ps1-4git
 
-**A git-aware addition to your PS1 prompt**
+**A git-aware section for your PS1 prompt**
 
-## Build and install
+## Prerequisites
 
-### Prerequisites
-
-TO be able to build the ``ps1-4git`` binary, you need a C compiler as well as
-``make`` installed on your system. The follwoing will do that for you on
+To be able to build the ``ps1-4git`` binary, you need a C compiler as well as
+``make`` installed on your system. The following will do that for you on
 Debian/Ubuntu:
 
 ```bash
 $ sudo apt-get install build-essential make
 ```
 
-### Build and install
+## Build and install
 
-To make use of this module, download, build and install ():
+To make use of this utility -- download, build and install:
+
 ```bash
 $ git clone --depth=1 https://gitlab.itlabs.bg/open-source/git-goodies.git
 $ cd git-goodies/ps1
 $ make && sudo make install
 ```
 
-The ``make install`` step should have added to your ``~/.bashrc`` a line that appends ``ps1-4git`` output to your PS1, similar to what is shown below:
+The ``make install`` step should have added to your ``~/.bashrc`` a line
+that appends ``ps1-4git`` output to your PS1 prompt, similar to what is shown
+below:
 
 ```bash
 PS1="$PS1\$(git status 2>&1 | ps1-4git -n)"
@@ -37,6 +38,24 @@ ps1-4git --4bashrc >> ~/.bashrc"  # make sure you do not add this multiple times
 ```
 
 Check also ``ps1-4git --help``.
+
+
+## Uninstall
+
+When you decide you want to get rid of ``ps1-4git``, just go to the ``git-goodies/ps1``
+directory and execute ``sudo make uninstall``:
+
+```bash
+$ cd git-goodies/ps1
+$ sudo make uninstall
+```
+
+After that, you can safely remove the repo directory itself like:
+
+```bash
+cd ~/parent-where-git-goodies-is/
+rm -rf git-goodies
+```
 
 
 ## Tests
