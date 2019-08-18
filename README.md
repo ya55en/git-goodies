@@ -107,6 +107,19 @@ gcc  -O2 -march=native ps1-4git.c tests/test-ps1-4git.c -Wall -Wfloat-equal -Wex
 All tests passed - OK
 ```
 
+## License
+Published under the **MIT** license.
+
+Copyright (c) 2019, Yassen Damyanov
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License.
+
+You should have received a copy of the MIT License along with this program
+(see LICENSE text file).
+
+If not, see <https://opensource.org/licenses/MIT>.
+
 
 ## Author
 
