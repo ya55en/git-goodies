@@ -28,7 +28,7 @@
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =
-    "ps1-4git - fancy git dash(board) in the PS1 prompt\n"
+    "ps1-4git - git-aware section in the PS1 prompt\n"
     "\n"
     "Usage:\n"
     "\n"

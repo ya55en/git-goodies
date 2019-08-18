@@ -1,13 +1,28 @@
 
 # ps1-4git
 
-**A git-aware section for your PS1 prompt**
+#### A git-aware section for your PS1 prompt
+
+## What is it?
+
+I wanted a git-aware prompt and was not able to get other things working
+the way I wanted (my fault, definitely). On the other hand I wanted to
+remind myself C coding (didn't do that since ~ 1993) so I decided to
+combine these two into one -- code in C a super simple and lightweight
+git-aware prompt add-on for my bash ``PS1``! ;)
+
+
+## How does it look like?
+
+(Working on providing screenshots, stay tuned.)
+
 
 ## Prerequisites
 
 To be able to build the ``ps1-4git`` binary, you need a C compiler as well as
-``make`` installed on your system. The following will do that for you on
-Debian/Ubuntu:
+``make`` installed on your system.
+
+The following will do that for you on Debian/Ubuntu:
 
 ```bash
 $ sudo apt-get install build-essential make
@@ -42,8 +57,8 @@ Check also ``ps1-4git --help``.
 
 ## Uninstall
 
-When you decide you want to get rid of ``ps1-4git``, just go to the ``git-goodies/ps1``
-directory and execute ``sudo make uninstall``:
+When you decide you want to get rid of ``ps1-4git``, just go to the
+``git-goodies/ps1`` directory and execute ``sudo make uninstall``:
 
 ```bash
 $ cd git-goodies/ps1
@@ -60,7 +75,11 @@ rm -rf git-goodies
 
 ## Tests
 
-To be able to build and run the tests, you need ``CUnit`` development package installed on your system.
+You probably don't need to do this (unless you want to make changes to the code
+and possibly submit a pull request). Still, if you need or want to, read further.
+
+To be able to build and run the tests, you need ``CUnit`` development package
+installed on your system.
 
 On Debian/Ubuntu this can be done with:
 
@@ -70,7 +89,7 @@ $ sudo apt-get install libcunit1-dev
 
 (tested and working on Ubuntu 18.04).
 
-As soon as you have that. going to the ``ps1/`` directory and running ``make test``
+As soon as you have that, going to the ``ps1/`` directory and running ``make test``
 should work:
 
 ```bash
@@ -81,7 +100,7 @@ $ make test
 Expected output:
 
 ```
-user@host:~/some-things/git-goodies/ps1$ make test
+user@host:~/some-dir/git-goodies/ps1$ make test
 gcc  -O2 -march=native ps1-4git.c tests/test-ps1-4git.c -Wall -Wfloat-equal -Wextra  -lcunit -o tests/test-ps1-4git
 ./tests/run-test.sh
 
@@ -91,4 +110,6 @@ All tests passed - OK
 
 ## Author
 
-Primary (and only one for now) author is Yassen Damyanov <yassen.damyanov.bg@gmail.com>
+Primary author/maintainer (for now):
+
+Yassen Damyanov <``yassen.damyanov.bg -AT- gmail.com``>
