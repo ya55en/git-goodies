@@ -2,9 +2,11 @@
 
 CC=gcc
 CCFLAGS=-O2 -march=native
+WFLAGS=-Wall -Wfloat-equal -Wextra
 LFLAGS=
 
-CFILES=ps1-4git.c
+CFILES=ps1-4git.c ps1-4git-main.c
+CFILES4TESTS=ps1-4git.c tests/test-ps1-4git.c
 
 
 all:	ps1-4git
@@ -12,18 +14,21 @@ all:	ps1-4git
 ps1-4git:	$(CFILES)
 	$(CC)  $(CCFLAGS) $(CFILES) $(LFLAGS) -o ps1-4git
 
-ps1-4git_prof:	$(CFILES)
-	$(CC) -pg -ggdb $(CCFLAGS) $(CFILES) $(LFLAGS) -o ps1-4git_prof
+ps1-4git-prof:	$(CFILES)
+	$(CC) -pg -ggdb $(CCFLAGS) $(CFILES) $(LFLAGS) -o ps1-4git-prof
 
-ps1-4git_debug:	$(CFILES)
-	$(CC) -g -ggdb $(CCFLAGS) $(CPPFILES) $(LFLAGS) -o ps1-4git_debug
+ps1-4git-debug:	$(CFILES)
+	$(CC) -g -ggdb $(CCFLAGS) $(CFILES) $(LFLAGS) $(WFLAGS) -Wpedantic -o ps1-4git-debug
 
 clean:
-	rm -f ps1-4git ps1-4git_prof ps1-4git_debug
+	rm -f ps1-4git ps1-4git-prof ps1-4git-debug
+
+test:   $(CFILES4TESTS)
+	$(CC)  $(CCFLAGS) $(CFILES4TESTS) $(WFLAGS) $(LFLAGS) -lcunit -o tests/test-ps1-4git
+	./tests/run-test.sh
 
 
-HOME_ROOT = $(shell ./home-root.sh)
-SUDO_HOME = $(HOME_ROOT)/$(SUDO_USER)
+SUDO_HOME = $(shell ./home-root.sh)/$(SUDO_USER)
 
 install:	ps1-4git
 	install -s -m 755 -o root -g root ./ps1-4git /usr/local/bin/

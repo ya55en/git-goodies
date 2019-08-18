@@ -1,5 +1,6 @@
 #! /bin/sh
-# Prints to stdout home root directory for this system
+#
+# Print home root directory for this system to stdout.
 
 useradd_conf=/etc/default/useradd
 

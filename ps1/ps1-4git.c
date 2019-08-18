@@ -3,12 +3,12 @@
  * and status of workspace files.
  */
 
-#include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 
-#define VERSION "0.1.3"
+#include "ps1-4git.h"
 
 #define EOL 10
 #define SPC 32
@@ -28,7 +28,7 @@
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =
-    "ps1-4git - fancy git dash(board) in the prompt\n"
+    "ps1-4git - fancy git dash(board) in the PS1 prompt\n"
     "\n"
     "Usage:\n"
     "\n"
@@ -54,7 +54,7 @@ const char* MSG_USAGE =
  * Return index of given char's occurance (searching left to right)
  * in str if found, -1 otherwise.
  */
-int indexof(const char ch, const char *str, int start) {
+int indexof(const char ch, const char* str, int start) {
     int idx = start;
     while (str[idx] != NUL && str[idx] != ch) {
         idx ++;
@@ -67,8 +67,8 @@ int indexof(const char ch, const char *str, int start) {
  * Return index of given char's occurance (searching right to left)
  * in str if found, -1 otherwise.
  */
-int rindexof(const char ch, const char *str, int start) {
-    int idx = (start > -1)? start : strlen(str) - 1;
+int rindexof(const char ch, const char* str, int start) {
+    int idx = (start > -1)? start : (int)strlen(str) - 1;
     while (idx >= 0 && str[idx] != ch) {
         idx --;
     }
@@ -79,7 +79,7 @@ int rindexof(const char ch, const char *str, int start) {
 /**
  * Return true if string a starts with string b, false otherwise.
  */
-bool startswith(const char *a, const char *b) {
+bool startswith(const char* a, const char* b) {
     return (strncmp(a, b, strlen(b)) == 0);
 }
 
@@ -100,8 +100,7 @@ int parse_input(bool no_unicode) {
     bool not_staged = false;
     bool untracked = false;
 
-    bool uptodate = false;
-    int aheadof_origin = 0;
+    // bool uptodate = false;
     int aheadof_count = -1;
     int behind_count = -1;
 
@@ -127,8 +126,8 @@ int parse_input(bool no_unicode) {
             int left = rindexof(SPC, line, right -1);
             behind_count = atoi(&line[left + 1]);
 
-        } else if (startswith(line, "Your branch is up to date ")) {
-            uptodate = true;
+        // } else if (startswith(line, "Your branch is up to date ")) {
+        //    uptodate = true;
 
         } else {
             not_staged = not_staged || startswith(line, "Changes not staged for commit:");
@@ -141,8 +140,8 @@ int parse_input(bool no_unicode) {
     // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
 
     char* bullet = no_unicode? "*" : "ꔷ";
-    char* left_arrow = no_unicode? "<-" : "⬅ ";
-    char* right_arrow = no_unicode? "->" : "➡ ";
+    char* left_arrow = no_unicode? "< " : "⬅ ";
+    char* right_arrow = no_unicode? "> " : "➡ ";
 
     printf("(");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
     if (to_be_committed)  fputs(COL_GRN, stdout);
@@ -176,7 +175,7 @@ bool isoneof(const char* short_sw, const char* long_sw, const char* arg) {
 /**
  * Main routine - handle command line args and call appropriate sub-functions.
  */
-int main(int argc, char **argv) {
+int doit(int argc, char** argv) {
     if (argc > 2) {
         fputs(MSG_WRONG_ARGS, stdout);
         return 2;
