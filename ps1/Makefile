@@ -13,7 +13,7 @@ CCFLAGS=-O2 -march=native
 WFLAGS=-Wall -Wfloat-equal -Wextra
 LFLAGS=
 
-CFILES=ps1-4git.c ps1-4git-main.c
+CFILES=ps1-4git.h ps1-4git.c ps1-4git-main.c
 CFILES4TESTS=ps1-4git.c tests/test-ps1-4git.c
 
 

@@ -9,8 +9,9 @@ If not, see <https://opensource.org/licenses/MIT>.
 */
 
 /**
- * Scan 'git status' output (read from stdin) to detect git branch
- * and status of workspace files.
+ * Scan `git status` output (reading it from stdin) to detect git branch
+ * and status of workspace files, then output a PS1-suited prompt section
+ * showing the branch and it's status.  See also README.md.
  */
 
 #include <stdio.h>
@@ -38,7 +39,8 @@ If not, see <https://opensource.org/licenses/MIT>.
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =
-    "ps1-4git - git-aware section in the PS1 prompt\n"
+    "ps1-4git - git-aware section for your PS1 prompt\n"
+    "https://github.com/yassen-itlabs/git-goodies\n"
     "\n"
     "Usage:\n"
     "\n"

@@ -36,10 +36,13 @@ To make use of this utility -- download, build and install:
 $ git clone --depth=1 https://github.com/yassen-itlabs/git-goodies.git
 $ cd git-goodies/ps1
 $ make && sudo make install
+$ source ~/.bashrc
 ```
 
+**What happened during the install?**
+
 The ``make install`` step should have added to your ``~/.bashrc`` a line
-that appends ``ps1-4git`` output to your PS1 prompt, similar to what is shown
+that appends ``ps1-4git`` output to your ``PS1`` prompt, similar to what is shown
 below:
 
 ```bash
@@ -52,13 +55,16 @@ The ``ps1-4git`` binary outputs such a line when called with ``--4bashrc``, like
 ps1-4git --4bashrc >> ~/.bashrc"  # make sure you do not add this multiple times
 ```
 
-Check also ``ps1-4git --help``.
+**What other command line arguments are supported?**
+
+See ``ps1-4git --help``.
 
 
 ## Uninstall
 
 When you decide you want to get rid of ``ps1-4git``, just go to the
-``git-goodies/ps1`` directory and execute ``sudo make uninstall``:
+``git-goodies/ps1`` directory (or clone it as shown in the _Build
+and Install_ section) and execute ``sudo make uninstall``:
 
 ```bash
 $ cd git-goodies/ps1
@@ -108,7 +114,7 @@ All tests passed - OK
 ```
 
 ## License
-Published under the **MIT** license.
+Released under the **MIT** license.
 
 Copyright (c) 2019, Yassen Damyanov
 

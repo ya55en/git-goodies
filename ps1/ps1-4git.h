@@ -12,7 +12,7 @@ If not, see <https://opensource.org/licenses/MIT>.
 
 #include <stdbool.h>
 
-#define VERSION "0.2.1"
+#define VERSION "0.2.2"
 
 int indexof(const char, const char*, int);
 int rindexof(const char, const char*, int);
