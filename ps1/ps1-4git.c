@@ -29,12 +29,12 @@ If not, see <https://opensource.org/licenses/MIT>.
 #define LINE_MAX 1024
 #define BRANCH_MAX 255
 
-#define COL_RED "\e[31m"
-#define COL_GRN "\e[32m"
-#define COL_YEL "\e[33m"
-#define COL_OFF "\e[0m"
+#define COL_RED "\001\033[31m\002"
+#define COL_GRN "\001\033[32m\002"
+#define COL_YEL "\001\033[33m\002"
+#define COL_OFF "\001\033[0m\002"
 
-#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | ps1-4git -n)\"  # ps1-4git-MARKER: Do NOT remove marker\n"
+#define PS1_SETUP_STRING "PS1=\"$PS1\\$(git status 2>&1 | ps1-4git)\"  # ps1-4git-MARKER: Do NOT remove marker\n"
 #define MSG_WRONG_ARGS "Wrong arguments. Try 'ps1-4git -h'\n"
 
 const char* MSG_USAGE =
