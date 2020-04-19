@@ -33,6 +33,7 @@ If not, see <https://opensource.org/licenses/MIT>.
 #define COL_RED "\001\033[31m\002"
 #define COL_GRN "\001\033[32m\002"
 #define COL_YEL "\001\033[33m\002"
+#define COL_MGT "\001\033[95m\002"  // light magenta, indicating diverged status
 #define COL_OFF "\001\033[0m\002"
 
 
@@ -85,10 +86,13 @@ int parse_input(bool no_unicode) {
     bool to_be_committed = false;
     bool not_staged = false;
     bool untracked = false;
+    bool diverged = false;
 
     // bool uptodate = false;
     int aheadof_count = -1;
     int behind_count = -1;
+    int diverged_local = -1;
+    int diverged_remote = -1;
 
     while (fgets(line, sizeof(line), stdin) != NULL) {  // reads newline too
         if (startswith(line, "fatal: ")) {
@@ -112,6 +116,18 @@ int parse_input(bool no_unicode) {
             int left = rindexof(SPC, line, right -1);
             behind_count = atoi(&line[left + 1]);
 
+        } else if (startswith(line, "Your branch and ")) {
+            // handle diverged status (history changed locally e.g. after 'commit --amend')
+            if (fgets(line, sizeof(line), stdin) == NULL) {  // read the next line
+                // should never be reached (but bail just in case)
+                fputs("<second line is NULL while handling diverged state>", stderr);
+            }
+            int first = sizeof("and have ") - 1;
+            diverged_local = atoi(&line[first]);  // diferent commits on local branch
+            int second = indexof(SPC, line, first) + sizeof("and ");
+            diverged_remote = atoi(&line[second]);  // diferent commits on local branch
+            diverged = true;
+
         // } else if (startswith(line, "Your branch is up to date ")) {
         //    uptodate = true;
 
@@ -123,28 +139,39 @@ int parse_input(bool no_unicode) {
     }
 
     // Unicodes: middle: A537 (used)  big: 27A1+space, super small bulet 2022 or 2981)
-    // useful unicode char map: https://unicode-table.com/en/#hangul-syllables
+    // useful unicode char map: https://unicode-table.com/en/#dingbats
 
     char* bullet = no_unicode? "*" : "ꔷ";
-    char* left_arrow = no_unicode? " <" : "⬅ ";
-    char* right_arrow = no_unicode? " >" : "➡ ";
+    char* left_arrow = no_unicode? " <" : "⬅ ";  // U+2B05
+    char* right_arrow = no_unicode? " >" : "➡ ";  // U+27A1
+    char* two_way = no_unicode? "|" : "⬍ ";  // U+2B0D (was 2718)
 
-    printf("(");  // TODO: denote push with ⭡2 (2B61), pull with ⭣3 (2B63)
+    printf("(");
     if (to_be_committed)  fputs(COL_GRN, stdout);
     else if (not_staged)  fputs(COL_RED, stdout);
     else if (untracked)  fputs(COL_YEL, stdout);
+    // else if (diverged)  fputs(COL_MGT, stdout); // let's have it just off-color
 
     fputs(thebranch, stdout);
-
     if (not_staged || to_be_committed || untracked) {
         fputs(COL_OFF, stdout);
     }
+
+    if (diverged) {
+        printf("%s %d%s%s%s%d) ", COL_OFF, diverged_local, COL_RED, two_way, COL_OFF, diverged_remote);
+        return 0;
+    }
+
+    // else
     if (aheadof_count > -1) {
-        printf("%s%s%d%s) ", COL_RED, right_arrow, aheadof_count, COL_OFF);  // 27A1 + spc
+        printf("%s%s%d%s) ", COL_RED, right_arrow, aheadof_count, COL_OFF);
+
     } else if (behind_count > -1) {
-        printf("%s%s%d%s) ", COL_YEL, left_arrow, behind_count, COL_OFF);  // 2b05 is <-
+        printf("%s%s%d%s) ", COL_YEL, left_arrow, behind_count, COL_OFF);
+
     } else {
         printf(" %s) ", bullet);
     }
+
     return 0;
 }
