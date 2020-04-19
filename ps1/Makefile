@@ -13,8 +13,8 @@ CCFLAGS=-O2 -march=native
 WFLAGS=-Wall -Wfloat-equal -Wextra
 LFLAGS=
 
-CFILES=ps1-4git.h ps1-4git.c ps1-4git-main.c
-CFILES4TESTS=ps1-4git.c tests/test-ps1-4git.c
+CFILES=ps1-4git.h ps1-4git.c ps1-4git-main.c main.c
+CFILES_4TESTS=ps1-4git.c ps1-4git-main.c tests/test-ps1-4git.c
 
 
 all:	ps1-4git
@@ -31,8 +31,8 @@ ps1-4git-debug:	$(CFILES)
 clean:
 	rm -f ps1-4git ps1-4git-prof ps1-4git-debug tests/test-ps1-4git
 
-test:   $(CFILES4TESTS)
-	$(CC)  $(CCFLAGS) $(CFILES4TESTS) $(WFLAGS) $(LFLAGS) -lcunit -o tests/test-ps1-4git
+test:   $(CFILES_4TESTS)
+	$(CC)  $(CCFLAGS) $(CFILES_4TESTS) $(WFLAGS) $(LFLAGS) -lcunit -o tests/test-ps1-4git
 	./tests/run-test.sh
 
 

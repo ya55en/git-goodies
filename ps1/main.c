@@ -8,15 +8,14 @@ You should have received a copy of the MIT License along with this program.
 If not, see <https://opensource.org/licenses/MIT>.
 */
 
-/** Header file for ps1-4git.c */
+/**
+ * A main() definition extracted in a separate .c file to avoid
+ * redefinition conflict with test-ps1-4git.c's main().
+ */
 
-#include <stdbool.h>
+#include "ps1-4git.h"
 
-#define VERSION "0.2.2"
 
-int indexof(const char, const char*, int);
-int rindexof(const char, const char*, int);
-bool startswith(const char*, const char*);
-int parse_input(bool);
-bool isoneof(const char*, const char*, const char*);
-int parse_args(int, char**);
+int main(int argc, char **argv) {
+    return parse_args(argc, argv);
+}

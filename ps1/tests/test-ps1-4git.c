@@ -91,6 +91,7 @@ void test_isoneof_false(void) {
 
 
 int run_test_suites(void) {
+
     CU_initialize_registry();
     CU_pSuite suite = CU_add_suite("ps1-4git-test", 0, 0);
 
@@ -109,7 +110,6 @@ int run_test_suites(void) {
 
     int rc = tests_failed? 5: 0;
     return rc;
-
 }
 
 

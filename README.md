@@ -107,7 +107,7 @@ Expected output:
 
 ```
 user@host:~/some-dir/git-goodies/ps1$ make test
-gcc  -O2 -march=native ps1-4git.c tests/test-ps1-4git.c -Wall -Wfloat-equal -Wextra  -lcunit -o tests/test-ps1-4git
+gcc  -O2 -march=native ps1-4git.c ps1-4git-main.c tests/test-ps1-4git.c -Wall -Wfloat-equal -Wextra  -lcunit -o tests/test-ps1-4git
 ./tests/run-test.sh
 
 All tests passed - OK
